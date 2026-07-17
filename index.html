@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据猎人 — 网页数据采集与监控服务</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #1a1a2e; background: #fafaf9; line-height: 1.6;
+  }
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px; max-width: 1200px; margin: 0 auto;
+  }
+  .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
+  .logo span { color: #2563eb; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-links a { text-decoration: none; color: #6b7280; font-size: 14px; }
+  .nav-links a:hover { color: #1a1a2e; }
+
+  section { padding: 60px 24px; max-width: 1200px; margin: 0 auto; }
+
+  .hero { padding: 100px 24px 80px; }
+  .hero h1 { font-size: 42px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; max-width: 640px; }
+  .hero h1 span { color: #2563eb; }
+  .hero p { color: #6b7280; font-size: 18px; margin-top: 18px; max-width: 520px; }
+  .hero-cta { display: flex; gap: 12px; margin-top: 32px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 12px 28px; border-radius: 8px; font-size: 15px; font-weight: 600;
+    text-decoration: none; cursor: pointer; border: none;
+  }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-outline { background: #fff; color: #1a1a2e; border: 1.5px solid #d1d5db; }
+  .btn-outline:hover { border-color: #9ca3af; }
+
+  .section-label { font-size: 12px; font-weight: 600; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .section-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.3px; }
+  .section-desc { color: #6b7280; font-size: 16px; max-width: 560px; margin-bottom: 40px; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .service-card {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+    padding: 28px; transition: border-color 0.2s;
+  }
+  .service-card:hover { border-color: #93c5fd; }
+  .service-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 18px; }
+  .icon-blue { background: #dbeafe; color: #2563eb; }
+  .icon-green { background: #d1fae5; color: #059669; }
+  .icon-amber { background: #fef3c7; color: #d97706; }
+  .service-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .service-card p { color: #6b7280; font-size: 14px; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .pricing-card {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+    padding: 32px 28px; position: relative;
+  }
+  .pricing-card.featured { border-color: #2563eb; box-shadow: 0 0 0 1px #2563eb; }
+  .pricing-card.featured::before {
+    content: "最受欢迎"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: #2563eb; color: #fff; font-size: 12px; font-weight: 600;
+    padding: 3px 14px; border-radius: 20px;
+  }
+  .price { font-size: 36px; font-weight: 800; margin: 16px 0 4px; }
+  .price-unit { font-size: 16px; font-weight: 400; color: #6b7280; }
+  .pricing-features { list-style: none; margin: 20px 0; }
+  .pricing-features li { padding: 6px 0; font-size: 14px; color: #4b5563; display: flex; align-items: center; gap: 8px; }
+  .pricing-features li::before { content: "✓"; color: #059669; font-weight: 700; font-size: 12px; }
+
+  .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .step-card { text-align: center; }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%; background: #dbeafe;
+    color: #2563eb; font-weight: 700; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+  }
+  .step-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .step-card p { color: #6b7280; font-size: 13px; }
+
+  .demo-section { background: #1a1a2e; color: #e5e7eb; border-radius: 14px; padding: 48px; margin-top: 60px; }
+  .demo-section .section-title { color: #fff; }
+  .demo-section .section-desc { color: #9ca3af; }
+  .demo-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+  .demo-table th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: #9ca3af; border-bottom: 1px solid #374151; text-transform: uppercase; letter-spacing: 0.5px; }
+  .demo-table td { padding: 12px; font-size: 14px; border-bottom: 1px solid #1f2937; }
+  .demo-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .tag-green { background: #064e3b; color: #6ee7b7; }
+  .tag-red { background: #7f1d1d; color: #fca5a5; }
+  .tag-blue { background: #1e3a5f; color: #93c5fd; }
+
+  footer { border-top: 1px solid #e5e7eb; padding: 32px 24px; text-align: center; color: #9ca3af; font-size: 13px; }
+
+  @media (max-width: 768px) {
+    .services-grid, .pricing-grid, .how-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 30px; }
+    section { padding: 40px 16px; }
+    .demo-section { padding: 28px 20px; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">数据<span>猎人</span></div>
+  <div class="nav-links">
+    <a href="#services">服务</a>
+    <a href="#pricing">价格</a>
+    <a href="#how">流程</a>
+    <a href="#demo">案例</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>把网页变成你的<span>数据资产</span></h1>
+  <p>竞品价格、行业动态、公开数据——自动采集、清洗、入库，你只管决策。</p>
+  <div class="hero-cta">
+    <a href="#pricing" class="btn btn-primary">查看方案</a>
+    <a href="#demo" class="btn btn-outline">看案例</a>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-label">服务范围</div>
+  <h2 class="section-title">我能帮你采集什么</h2>
+  <p class="section-desc">10 分钟内完成数据源分析，24 小时内交付第一个版本。</p>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon icon-blue">📊</div>
+      <h3>竞品价格监控</h3>
+      <p>7×24 监控竞品/供货商价格变动，降价、缺货、上新秒级通知。</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon icon-green">📰</div>
+      <h3>行业信息聚合</h3>
+      <p>从多个平台自动抓取行业动态、政策、招标信息，每日汇总报告。</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon icon-amber">🔍</div>
+      <h3>定制数据采集</h3>
+      <p>任何公开网页数据——商品、评论、房源、招聘、舆情——按你的格式交付。</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-label">定价</div>
+  <h2 class="section-title">简单透明的价格</h2>
+  <p class="section-desc">所有方案都包含一次免费数据源评估。</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h3>体验版</h3>
+      <div class="price">¥199<span class="price-unit">/次</span></div>
+      <p style="color:#6b7280;font-size:13px;">适合尝试验证需求</p>
+      <ul class="pricing-features">
+        <li>1 个数据源</li>
+        <li>单次采集</li>
+        <li>CSV/Excel 交付</li>
+        <li>3 天售后支持</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">联系我</a>
+    </div>
+    <div class="pricing-card featured">
+      <h3>标准版</h3>
+      <div class="price">¥499<span class="price-unit">/月</span></div>
+      <p style="color:#6b7280;font-size:13px;">适合持续监控需求</p>
+      <ul class="pricing-features">
+        <li>最多 3 个数据源</li>
+        <li>每日自动采集</li>
+        <li>钉钉/微信通知</li>
+        <li>在线数据看板</li>
+        <li>历史数据存储</li>
+        <li>7 天售后支持</li>
+      </ul>
+      <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">立即开始</a>
+    </div>
+    <div class="pricing-card">
+      <h3>定制版</h3>
+      <div class="price">¥1999<span class="price-unit">/月起</span></div>
+      <p style="color:#6b7280;font-size:13px;">适合复杂业务场景</p>
+      <ul class="pricing-features">
+        <li>不限数据源</li>
+        <li>自定义采集频率</li>
+        <li>API 接口交付</li>
+        <li>数据清洗 + 去重</li>
+        <li>专属定制看板</li>
+        <li>微信专属客服</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width:100%;justify-content:center;">预约咨询</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-label">合作流程</div>
+  <h2 class="section-title">四步开始用数据赚钱</h2>
+  <div class="how-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h4>告诉我需求</h4>
+      <p>发一个网址 + 你要的数据字段</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h4>我评估可行性</h4>
+      <p>10 分钟内给出能否采集 + 预估完成时间</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h4>交付数据样本</h4>
+      <p>先给样本确认格式和字段</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h4>正式运行</h4>
+      <p>拉通全量数据，按约定频率持续交付</p>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="demo-section">
+    <div class="section-label" style="color:#93c5fd;">真实案例</div>
+    <h2 class="section-title">竞品价格监控 — 演示数据</h2>
+    <p class="section-desc">每天自动采集 3 个电商平台的同款商品价格，生成对比报告。</p>
+    <table class="demo-table">
+      <thead>
+        <tr><th>商品名称</th><th>平台</th><th>价格</th><th>状态</th><th>采集时间</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>iPhone 15 Pro Max 256GB</td><td>京东</td><td>¥8,999</td><td><span class="tag tag-red">降价 ¥300</span></td><td>2026-07-17 09:00</td></tr>
+        <tr><td>iPhone 15 Pro Max 256GB</td><td>天猫</td><td>¥9,199</td><td><span class="tag tag-blue">持平</span></td><td>2026-07-17 09:00</td></tr>
+        <tr><td>iPhone 15 Pro Max 256GB</td><td>拼多多</td><td>¥8,599</td><td><span class="tag tag-green">最低价</span></td><td>2026-07-17 09:00</td></tr>
+        <tr><td>戴森 V15 吸尘器</td><td>京东</td><td>¥4,290</td><td><span class="tag tag-red">降价 ¥200</span></td><td>2026-07-17 09:00</td></tr>
+        <tr><td>戴森 V15 吸尘器</td><td>天猫</td><td>¥4,490</td><td><span class="tag tag-blue">持平</span></td><td>2026-07-17 09:00</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>数据猎人 · 帮你把公开信息变成竞争优势</p>
+  <p style="margin-top:4px;">联系：微信 shujulieren | 邮箱 hi@shujulieren.cn</p>
+</footer>
+
+</body>
+</html>
