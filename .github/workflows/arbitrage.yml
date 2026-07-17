@@ -1,0 +1,29 @@
+name: Arbitrage Bot
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install requests
+      - name: Find arbitrage
+        run: |
+          python -c "
+import requests
+prices = {t['symbol']:float(t['price']) for t in requests.get('https://api.binance.com/api/v3/ticker/price',timeout=10).json()}
+btc = prices.get('BTCUSDT',0)
+eth = prices.get('ETHUSDT',0)
+with open('results.md','w') as f:
+    f.write(f'# Arbitrage Report\nBTC: \${btc:,.0f}\nETH: \${eth:,.0f}\n')
+"
+      - run: |
+          git config user.name bot
+          git config user.email bot@datahunter.dev
+          git add results.md
+          git diff --cached --quiet || git commit -m "Update"
+          git push
